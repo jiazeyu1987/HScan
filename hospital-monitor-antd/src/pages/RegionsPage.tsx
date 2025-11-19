@@ -134,7 +134,7 @@ const RegionsPage: React.FC = () => {
                 </Button>
               </Space>
             }
-            bodyStyle={{ padding: 0 }}
+            styles={{ body: { padding: 0 } }}
           >
             <RegionTree
               onRegionSelect={handleRegionSelect}

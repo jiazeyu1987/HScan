@@ -174,7 +174,7 @@ export const tenderApi = {
 export const regionApi = {
   // 获取地区树形结构
   getRegionsTree: async (): Promise<ApiResponse<Region[]>> => {
-    return api.get('/regions')
+    return api.get('/regions/tree')
   },
 
   // 获取地区详情

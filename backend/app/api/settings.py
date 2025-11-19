@@ -287,3 +287,56 @@ def reset_settings():
         db.session.rollback()
         current_app.logger.error(f'重置设置失败: {str(e)}')
         return error_response('重置设置失败', 500)
+
+@bp.route('/settings/system_info', methods=['GET'])
+def get_system_info():
+    """获取系统信息"""
+
+    try:
+        # 模拟系统信息数据
+        system_info = {
+            'version': {
+                'backend': '1.0.0',
+                'frontend': '1.0.0',
+                'database': 'SQLite 3.x',
+                'python': '3.11+',
+                'flask': '2.3.3'
+            },
+            'system': {
+                'platform': 'Linux/Windows',
+                'architecture': 'x64',
+                'cpu_cores': 4,
+                'memory_total': '8GB',
+                'disk_space': '100GB'
+            },
+            'runtime': {
+                'start_time': '2025-11-19T07:30:00Z',
+                'uptime_seconds': 3600,
+                'active_connections': 10,
+                'total_requests': 1250,
+                'error_count': 5
+            },
+            'database': {
+                'type': 'SQLite',
+                'size': '50MB',
+                'total_records': {
+                    'hospitals': 1250,
+                    'tenders': 3456,
+                    'regions': 500,
+                    'scan_logs': 10000
+                }
+            },
+            'features': {
+                'web_scraping': True,
+                'scheduler': True,
+                'export_excel': True,
+                'real_time_monitoring': True,
+                'api_access': True
+            }
+        }
+
+        return success_response(system_info)
+
+    except Exception as e:
+        current_app.logger.error(f'获取系统信息失败: {str(e)}')
+        return error_response('获取系统信息失败', 500)

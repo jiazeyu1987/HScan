@@ -409,15 +409,14 @@ const CrawlerDashboard: React.FC = () => {
               <Text type="secondary">暂无日志记录</Text>
             </div>
           ) : (
-            <Timeline>
-              {logs.map((log) => {
+            <Timeline
+              items={logs.map((log) => {
                 const levelConfig = getLogLevelConfig(log.level)
-                return (
-                  <Timeline.Item
-                    key={log.id}
-                    dot={levelConfig.icon}
-                    color={levelConfig.color}
-                  >
+                return {
+                  key: log.id,
+                  dot: levelConfig.icon,
+                  color: levelConfig.color,
+                  children: (
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
                         <div className="flex items-center space-x-2 mb-1">
@@ -436,10 +435,10 @@ const CrawlerDashboard: React.FC = () => {
                         <Text>{log.message}</Text>
                       </div>
                     </div>
-                  </Timeline.Item>
-                )
+                  )
+                }
               })}
-            </Timeline>
+            />
           )}
         </div>
       </Card>

@@ -415,47 +415,63 @@ const Dashboard: React.FC = () => {
               </div>
             }
           >
-            <Timeline size="small">
-              <Timeline.Item color="green" dot={<CheckCircleOutlined />}>
-                <div>
-                  <Text strong>爬虫扫描完成</Text>
-                  <div className="text-xs text-gray-500">刚刚</div>
-                </div>
-                <Paragraph className="text-xs mt-1" ellipsis={{ rows: 1 }}>
-                  成功扫描 15 家医院，发现 23 条新招投标信息
-                </Paragraph>
-              </Timeline.Item>
-
-              <Timeline.Item color="blue" dot={<FileTextOutlined />}>
-                <div>
-                  <Text strong>数据更新</Text>
-                  <div className="text-xs text-gray-500">5分钟前</div>
-                </div>
-                <Paragraph className="text-xs mt-1" ellipsis={{ rows: 1 }}>
-                  定期数据清理完成，删除过期日志 156 条
-                </Paragraph>
-              </Timeline.Item>
-
-              <Timeline.Item color="orange" dot={<WarningOutlined />}>
-                <div>
-                  <Text strong>系统警告</Text>
-                  <div className="text-xs text-gray-500">10分钟前</div>
-                </div>
-                <Paragraph className="text-xs mt-1" ellipsis={{ rows: 1 }}>
-                  医院官网响应超时，建议检查网络连接
-                </Paragraph>
-              </Timeline.Item>
-
-              <Timeline.Item color="gray" dot={<ScanOutlined />}>
-                <div>
-                  <Text strong>定时任务</Text>
-                  <div className="text-xs text-gray-500">30分钟前</div>
-                </div>
-                <Paragraph className="text-xs mt-1" ellipsis={{ rows: 1 }}>
-                  启动每日定期扫描任务
-                </Paragraph>
-              </Timeline.Item>
-            </Timeline>
+            <Timeline
+              size="small"
+              items={[
+                {
+                  color: "green",
+                  dot: <CheckCircleOutlined />,
+                  children: (
+                    <div>
+                      <Text strong>爬虫扫描完成</Text>
+                      <div className="text-xs text-gray-500">刚刚</div>
+                      <Paragraph className="text-xs mt-1" ellipsis={{ rows: 1 }}>
+                        成功扫描 15 家医院，发现 23 条新招投标信息
+                      </Paragraph>
+                    </div>
+                  )
+                },
+                {
+                  color: "blue",
+                  dot: <FileTextOutlined />,
+                  children: (
+                    <div>
+                      <Text strong>数据更新</Text>
+                      <div className="text-xs text-gray-500">5分钟前</div>
+                      <Paragraph className="text-xs mt-1" ellipsis={{ rows: 1 }}>
+                        定期数据清理完成，删除过期日志 156 条
+                      </Paragraph>
+                    </div>
+                  )
+                },
+                {
+                  color: "orange",
+                  dot: <WarningOutlined />,
+                  children: (
+                    <div>
+                      <Text strong>系统警告</Text>
+                      <div className="text-xs text-gray-500">10分钟前</div>
+                      <Paragraph className="text-xs mt-1" ellipsis={{ rows: 1 }}>
+                        医院官网响应超时，建议检查网络连接
+                      </Paragraph>
+                    </div>
+                  )
+                },
+                {
+                  color: "gray",
+                  dot: <ScanOutlined />,
+                  children: (
+                    <div>
+                      <Text strong>定时任务</Text>
+                      <div className="text-xs text-gray-500">30分钟前</div>
+                      <Paragraph className="text-xs mt-1" ellipsis={{ rows: 1 }}>
+                        启动每日定期扫描任务
+                      </Paragraph>
+                    </div>
+                  )
+                }
+              ]}
+            />
           </Card>
         </Col>
       </Row>

@@ -18,6 +18,6 @@ def export_hospitals():
     return success_response({'message': '医院数据导出功能开发中...'})
 
 @bp.route('/exports/tenders', methods=['POST'])
-def export_tenders():
+def export_tenders_from_exports():
     """导出招投标数据"""
     return success_response({'message': '招投标数据导出功能开发中...'})

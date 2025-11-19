@@ -14,7 +14,9 @@ from flask import Blueprint
 # 创建API蓝图
 bp = Blueprint('api', __name__)
 
-# 延迟导入各个API模块（在模块内部注册路由）
+# 导入各个API模块以注册路由
+from app.api import health, hospitals, regions, tenders, crawler, settings, exports, statistics
+
 def init_api():
     """初始化API路由"""
     pass

@@ -278,12 +278,14 @@ const Settings: React.FC = () => {
                 label="扫描间隔"
                 tooltip="两次扫描之间的间隔时间(秒)"
               >
-                <InputNumber
-                  min={60}
-                  max={86400}
-                  className="w-full"
-                  addonAfter="秒"
-                />
+                <Space.Compact className="w-full">
+                  <InputNumber
+                    min={60}
+                    max={86400}
+                    className="flex-1"
+                  />
+                  <span className="flex items-center px-3 bg-gray-50 border border-l-0 border-gray-300">秒</span>
+                </Space.Compact>
               </Form.Item>
 
               <Row gutter={16}>

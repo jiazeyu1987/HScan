@@ -491,7 +491,7 @@ export const useRegionStore = create<RegionState>()(
         set({ loading: true })
         try {
           const response = await regionApi.getRegionsTree()
-          set({ regions: response.data, loading: false })
+          set({ regions: response.data?.tree || [], loading: false })
         } catch (error) {
           // 使用模拟地区数据作为fallback
           const mockRegions = [

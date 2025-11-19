@@ -51,7 +51,9 @@ def create_app(config_name=None):
     migrate.init_app(app, db)
     
     # 配置CORS
-    CORS(app, origins=["http://localhost:3000", "http://127.0.0.1:3000"])
+    CORS(app, origins=["http://localhost:3000", "http://127.0.0.1:3000",
+                       "http://localhost:5173", "http://127.0.0.1:5173",
+                       "http://localhost:5174", "http://127.0.0.1:5174"])
     
     # 配置日志
     configure_logging(app)

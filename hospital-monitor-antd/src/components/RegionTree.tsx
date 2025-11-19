@@ -43,8 +43,12 @@ const RegionTree: React.FC<RegionTreeProps> = ({
 
   // 转换数据为Tree组件格式
   const convertToTreeData = (regions: Region[], keyword: string = ''): DataNode[] => {
+    // 确保regions是数组
+    const regionsArray = Array.isArray(regions) ? regions : []
+
     const filterTree = (nodes: Region[]): Region[] => {
-      return nodes
+      const nodesArray = Array.isArray(nodes) ? nodes : []
+      return nodesArray
         .filter(node => {
           if (!keyword || node.name.includes(keyword)) {
             return true
@@ -64,7 +68,7 @@ const RegionTree: React.FC<RegionTreeProps> = ({
         })
     }
 
-    return filterTree(regions).map(convertNodeToTreeNode)
+    return filterTree(regionsArray).map(convertNodeToTreeNode)
   }
 
   const convertNodeToTreeNode = (region: Region): DataNode => {
