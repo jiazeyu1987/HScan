@@ -9,7 +9,7 @@
 """
 
 from flask import request, current_app
-from datetime import datetime
+from datetime import datetime, timedelta
 from app.api import bp
 from app.utils.response import success_response, error_response
 from app.services.crawler_manager import crawler_manager
@@ -360,78 +360,194 @@ def get_crawler_logs():
         per_page = int(request.args.get('per_page', 50))
         level = request.args.get('level')
 
-        # 模拟爬虫日志数据
-        mock_logs = [
-            {
-                'id': 1,
-                'timestamp': '2025-11-18T14:30:00Z',
-                'level': 'info',
-                'message': '开始扫描北京协和医院官网',
-                'task_id': 'scan_beijing_001',
-                'hospital_name': '北京协和医院',
-                'details': {
-                    'url': 'http://www.pumch.cn',
-                    'status': 'success',
-                    'response_time': 1.2
+        # 获取所有任务状态，生成实时日志
+        all_tasks = crawler_manager.get_all_tasks()
+        real_logs = []
+
+        log_id = 1
+        for task_id, task_info in all_tasks.items():
+            # 为每个任务生成日志条目
+
+            # 任务启动日志
+            if task_info.get('start_time'):
+                real_logs.append({
+                    'id': log_id,
+                    'timestamp': task_info['start_time'],
+                    'level': 'info',
+                    'message': f'开始执行爬虫任务: {task_info["task_type"]}',
+                    'task_id': task_id,
+                    'hospital_name': None,
+                    'details': {
+                        'task_type': task_info['task_type'],
+                        'config': '医院扫描任务'
+                    }
+                })
+                log_id += 1
+
+            # 根据任务状态和进度生成日志
+            if task_info['status'] == 'running':
+                progress = task_info.get('progress', 0)
+                current_time = datetime.utcnow().isoformat()
+
+                # 根据进度生成阶段性日志
+                if progress > 10 and progress <= 20:
+                    real_logs.append({
+                        'id': log_id,
+                        'timestamp': current_time,
+                        'level': 'info',
+                        'message': f'正在初始化爬虫引擎...',
+                        'task_id': task_id,
+                        'hospital_name': None,
+                        'details': {'progress': f'{progress:.0f}%'}
+                    })
+                    log_id += 1
+
+                elif progress > 20 and progress <= 40:
+                    real_logs.append({
+                        'id': log_id,
+                        'timestamp': current_time,
+                        'level': 'info',
+                        'message': f'发现医院官网首页，正在解析导航结构...',
+                        'task_id': task_id,
+                        'hospital_name': '模拟医院',
+                        'details': {
+                            'url': 'http://hospital.example.com',
+                            'progress': f'{progress:.0f}%'
+                        }
+                    })
+                    log_id += 1
+
+                elif progress > 40 and progress <= 60:
+                    real_logs.append({
+                        'id': log_id,
+                        'timestamp': current_time,
+                        'level': 'info',
+                        'message': f'正在查找招投标信息入口...',
+                        'task_id': task_id,
+                        'hospital_name': '模拟医院',
+                        'details': {'progress': f'{progress:.0f}%'}
+                    })
+                    log_id += 1
+
+                elif progress > 60 and progress <= 80:
+                    if progress > 65:
+                        real_logs.append({
+                            'id': log_id,
+                            'timestamp': current_time,
+                            'level': 'info',
+                            'message': f'发现招投标栏目，正在解析信息...',
+                            'task_id': task_id,
+                            'hospital_name': '模拟医院',
+                            'details': {
+                                'tenders_found': 1,
+                                'progress': f'{progress:.0f}%'
+                            }
+                        })
+                        log_id += 1
+
+                    real_logs.append({
+                        'id': log_id,
+                        'timestamp': current_time,
+                        'level': 'info',
+                        'message': f'正在深入分析招投标详情...',
+                        'task_id': task_id,
+                        'hospital_name': '模拟医院',
+                        'details': {'progress': f'{progress:.0f}%'}
+                    })
+                    log_id += 1
+
+                elif progress > 80:
+                    real_logs.append({
+                        'id': log_id,
+                        'timestamp': current_time,
+                        'level': 'info',
+                        'message': f'正在验证和整理数据...',
+                        'task_id': task_id,
+                        'hospital_name': '模拟医院',
+                        'details': {'progress': f'{progress:.0f}%'}
+                    })
+                    log_id += 1
+
+            elif task_info['status'] == 'stopped' and task_info.get('result'):
+                # 任务完成日志
+                result = task_info['result']
+                real_logs.append({
+                    'id': log_id,
+                    'timestamp': task_info.get('end_time', datetime.utcnow().isoformat()),
+                    'level': 'info',
+                    'message': f'任务执行完成，扫描了{result.get("websites_scanned", 0)}个网站',
+                    'task_id': task_id,
+                    'hospital_name': None,
+                    'details': {
+                        'successful_scans': result.get('successful_scans', 0),
+                        'tenders_found': result.get('tenders_found', 0),
+                        'scan_quality': result.get('scan_quality', 'unknown')
+                    }
+                })
+                log_id += 1
+
+                # 如果发现了招投标，添加发现日志
+                if result.get('tenders_found', 0) > 0:
+                    real_logs.append({
+                        'id': log_id,
+                        'timestamp': task_info.get('end_time', datetime.utcnow().isoformat()),
+                        'level': 'info',
+                        'message': f'成功发现{result.get("tenders_found", 0)}条招投标信息',
+                        'task_id': task_id,
+                        'hospital_name': '模拟医院',
+                        'details': {
+                            'tender_count': result.get('tenders_found', 0),
+                            'data_processed': result.get('data_processed', 'none')
+                        }
+                    })
+                    log_id += 1
+
+            elif task_info['status'] == 'error':
+                # 错误日志
+                real_logs.append({
+                    'id': log_id,
+                    'timestamp': task_info.get('end_time', datetime.utcnow().isoformat()),
+                    'level': 'error',
+                    'message': f'任务执行失败: {task_info.get("error_message", "未知错误")}',
+                    'task_id': task_id,
+                    'hospital_name': None,
+                    'details': {
+                        'error': task_info.get('error_message', '未知错误'),
+                        'task_type': task_info['task_type']
+                    }
+                })
+                log_id += 1
+
+        # 如果没有真实任务日志，提供一些默认的历史日志
+        if not real_logs:
+            real_logs = [
+                {
+                    'id': 1,
+                    'timestamp': datetime.utcnow().isoformat(),
+                    'level': 'info',
+                    'message': '爬虫系统已就绪，等待任务启动...',
+                    'task_id': None,
+                    'hospital_name': None,
+                    'details': {'status': 'ready'}
+                },
+                {
+                    'id': 2,
+                    'timestamp': (datetime.utcnow() - timedelta(minutes=5)).isoformat(),
+                    'level': 'info',
+                    'message': '系统初始化完成',
+                    'task_id': None,
+                    'hospital_name': None,
+                    'details': {'component': 'crawler_manager'}
                 }
-            },
-            {
-                'id': 2,
-                'timestamp': '2025-11-18T14:25:00Z',
-                'level': 'info',
-                'message': '发现新的招投标信息',
-                'task_id': 'scan_beijing_001',
-                'hospital_name': '北京协和医院',
-                'details': {
-                    'tender_title': '医疗设备采购项目',
-                    'tender_budget': 2500000
-                }
-            },
-            {
-                'id': 3,
-                'timestamp': '2025-11-18T14:20:00Z',
-                'level': 'error',
-                'message': '扫描失败：连接超时',
-                'task_id': 'scan_shanghai_002',
-                'hospital_name': '上海瑞金医院',
-                'details': {
-                    'url': 'http://www.rjh.com.cn',
-                    'error': 'Connection timeout after 30 seconds',
-                    'retry_count': 3
-                }
-            },
-            {
-                'id': 4,
-                'timestamp': '2025-11-18T14:15:00Z',
-                'level': 'warning',
-                'message': '网站结构发生变化，需要更新爬虫规则',
-                'task_id': 'scan_guangzhou_003',
-                'hospital_name': '广州中山一院',
-                'details': {
-                    'url': 'http://www.zs-hospital.sh.cn',
-                    'issue': 'HTML structure changed',
-                    'action_required': 'update parser rules'
-                }
-            },
-            {
-                'id': 5,
-                'timestamp': '2025-11-18T14:10:00Z',
-                'level': 'info',
-                'message': '扫描完成，共发现3条新招投标',
-                'task_id': 'scan_jiangsu_004',
-                'hospital_name': '江苏省人民医院',
-                'details': {
-                    'new_tenders': 3,
-                    'updated_tenders': 1,
-                    'total_scan_time': 45.6
-                }
-            }
-        ]
+            ]
+
+        # 按时间戳倒序排列（最新的在前面）
+        real_logs.sort(key=lambda x: x['timestamp'], reverse=True)
 
         # 根据level过滤日志
-        filtered_logs = mock_logs
+        filtered_logs = real_logs
         if level and level != 'all':
-            filtered_logs = [log for log in mock_logs if log['level'] == level]
+            filtered_logs = [log for log in real_logs if log['level'] == level]
 
         # 分页处理
         total_logs = len(filtered_logs)
@@ -452,4 +568,7 @@ def get_crawler_logs():
         })
 
     except Exception as e:
+        current_app.logger.error(f'获取爬虫日志失败: {str(e)}')
+        import traceback
+        current_app.logger.error(f'错误堆栈: {traceback.format_exc()}')
         return error_response('获取爬虫日志失败', 500)

@@ -93,7 +93,7 @@ class CrawlerTask:
             
             self.status = CrawlerStatus.STOPPED
             self.end_time = datetime.utcnow()
-            self.progress = 100.0
+            self.progress = 100
             self.message = "任务执行完成"
             
         except Exception as e:
@@ -112,7 +112,7 @@ class CrawlerTask:
 
             time.sleep(3)  # 模拟工作，每步3秒，总共1分钟
 
-            self.progress = (i + 1) / total_steps * 100
+            self.progress = round((i + 1) / total_steps * 100)
             self.message = f"正在搜索医院信息... ({i + 1}/{total_steps})"
 
             # 模拟找到医院
@@ -131,7 +131,7 @@ class CrawlerTask:
 
             time.sleep(2)  # 模拟工作，每步2秒，总共30秒
 
-            self.progress = (i + 1) / total_steps * 100
+            self.progress = round((i + 1) / total_steps * 100)
             self.message = f"正在监控招投标信息... ({i + 1}/{total_steps})"
 
             # 模拟找到招投标
@@ -158,7 +158,7 @@ class CrawlerTask:
 
             time.sleep(step_delay)  # 根据模式调整延迟
 
-            self.progress = (i + 1) / total_steps * 100
+            self.progress = round((i + 1) / total_steps * 100)
             self.message = f"正在扫描医院网站... ({i + 1}/{total_steps})"
 
             # 模拟扫描结果，在不同阶段发现不同的内容

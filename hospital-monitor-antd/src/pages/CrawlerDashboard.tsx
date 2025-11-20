@@ -206,6 +206,11 @@ const CrawlerDashboard: React.FC = () => {
     return Math.round((status.completed_tasks / status.total_tasks) * 100)
   }
 
+  // 格式化进度显示，只显示整数
+  const formatProgress = (value: number) => {
+    return Math.round(value)
+  }
+
   const statusConfig = status ? getStatusConfig(status.status) : getStatusConfig('stopped')
 
   return (
@@ -278,6 +283,7 @@ const CrawlerDashboard: React.FC = () => {
                   '100%': '#87d068',
                 }}
                 showInfo={true}
+                format={(percent) => `${formatProgress(percent)}%`}
               />
               
               {status && status.current_task && (
@@ -287,7 +293,7 @@ const CrawlerDashboard: React.FC = () => {
                     {status.current_task.message} (任务ID: {status.current_task.task_id})
                   </Paragraph>
                   <div className="mt-2 text-sm text-gray-500">
-                    类型: {status.current_task.task_type} | 进度: {status.current_task.progress.toFixed(1)}%
+                    类型: {status.current_task.task_type} | 进度: {formatProgress(status.current_task.progress)}%
                   </div>
                 </div>
               )}
