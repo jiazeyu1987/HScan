@@ -44,7 +44,7 @@ class CrawlerTask:
             return False
         
         self.status = CrawlerStatus.RUNNING
-        self.start_time = datetime.utcnow()
+        self.start_time = datetime.now()
         self.progress = 0.0
         self.message = "任务正在执行..."
         self.error_message = None
@@ -58,7 +58,7 @@ class CrawlerTask:
         """停止任务"""
         if self.status == CrawlerStatus.RUNNING:
             self.status = CrawlerStatus.STOPPED
-            self.end_time = datetime.utcnow()
+            self.end_time = datetime.now()
             self.message = "任务已停止"
             return True
         return False
@@ -92,13 +92,13 @@ class CrawlerTask:
                 raise ValueError(f"不支持的任务类型: {self.task_type}")
             
             self.status = CrawlerStatus.STOPPED
-            self.end_time = datetime.utcnow()
+            self.end_time = datetime.now()
             self.progress = 100
             self.message = "任务执行完成"
             
         except Exception as e:
             self.status = CrawlerStatus.ERROR
-            self.end_time = datetime.utcnow()
+            self.end_time = datetime.now()
             self.error_message = str(e)
             self.message = f"任务执行失败: {str(e)}"
     
@@ -289,7 +289,7 @@ class CrawlerManager:
     
     def cleanup_completed_tasks(self, max_age_hours: int = 24):
         """清理已完成的任务"""
-        cutoff_time = datetime.utcnow() - timedelta(hours=max_age_hours)
+        cutoff_time = datetime.now() - timedelta(hours=max_age_hours)
         
         with self._lock:
             completed_tasks = []

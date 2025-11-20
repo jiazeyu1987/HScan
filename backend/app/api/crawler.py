@@ -191,7 +191,7 @@ def start_crawler():
             'task_type': task_type,
             'config': config,
             'monitor_url': f'/api/v1/crawler/tasks/{task_id}',
-            'started_at': datetime.utcnow().isoformat(),
+            'started_at': datetime.now().isoformat(),
             'running_tasks_count': len(crawler_manager.get_running_tasks())
         })
 
@@ -287,7 +287,7 @@ def trigger_crawler():
             'priority': priority,
             'config': config,
             'monitor_url': f'/api/v1/crawler/tasks/{task_id}',
-            'triggered_at': datetime.utcnow().isoformat()
+            'triggered_at': datetime.now().isoformat()
         }, 201)
 
     except Exception as e:
@@ -387,7 +387,7 @@ def get_crawler_logs():
             # 根据任务状态和进度生成日志
             if task_info['status'] == 'running':
                 progress = task_info.get('progress', 0)
-                current_time = datetime.utcnow().isoformat()
+                current_time = datetime.now().isoformat()
 
                 # 根据进度生成阶段性日志
                 if progress > 10 and progress <= 20:
@@ -473,7 +473,7 @@ def get_crawler_logs():
                 result = task_info['result']
                 real_logs.append({
                     'id': log_id,
-                    'timestamp': task_info.get('end_time', datetime.utcnow().isoformat()),
+                    'timestamp': task_info.get('end_time', datetime.now().isoformat()),
                     'level': 'info',
                     'message': f'任务执行完成，扫描了{result.get("websites_scanned", 0)}个网站',
                     'task_id': task_id,
@@ -490,7 +490,7 @@ def get_crawler_logs():
                 if result.get('tenders_found', 0) > 0:
                     real_logs.append({
                         'id': log_id,
-                        'timestamp': task_info.get('end_time', datetime.utcnow().isoformat()),
+                        'timestamp': task_info.get('end_time', datetime.now().isoformat()),
                         'level': 'info',
                         'message': f'成功发现{result.get("tenders_found", 0)}条招投标信息',
                         'task_id': task_id,
@@ -506,7 +506,7 @@ def get_crawler_logs():
                 # 错误日志
                 real_logs.append({
                     'id': log_id,
-                    'timestamp': task_info.get('end_time', datetime.utcnow().isoformat()),
+                    'timestamp': task_info.get('end_time', datetime.now().isoformat()),
                     'level': 'error',
                     'message': f'任务执行失败: {task_info.get("error_message", "未知错误")}',
                     'task_id': task_id,
@@ -523,7 +523,7 @@ def get_crawler_logs():
             real_logs = [
                 {
                     'id': 1,
-                    'timestamp': datetime.utcnow().isoformat(),
+                    'timestamp': datetime.now().isoformat(),
                     'level': 'info',
                     'message': '爬虫系统已就绪，等待任务启动...',
                     'task_id': None,
@@ -532,7 +532,7 @@ def get_crawler_logs():
                 },
                 {
                     'id': 2,
-                    'timestamp': (datetime.utcnow() - timedelta(minutes=5)).isoformat(),
+                    'timestamp': (datetime.now() - timedelta(minutes=5)).isoformat(),
                     'level': 'info',
                     'message': '系统初始化完成',
                     'task_id': None,

@@ -197,7 +197,29 @@ const CrawlerDashboard: React.FC = () => {
 
   // 格式化时间
   const formatTime = (timeStr: string) => {
-    return new Date(timeStr).toLocaleString('zh-CN')
+    if (!timeStr) return '-'
+
+    try {
+      const date = new Date(timeStr)
+      // 检查是否是有效日期
+      if (isNaN(date.getTime())) {
+        return timeStr // 如果无法解析，返回原始字符串
+      }
+
+      // 返回本地化的中文时间格式
+      return date.toLocaleString('zh-CN', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false
+      })
+    } catch (error) {
+      console.error('时间格式化错误:', error)
+      return timeStr
+    }
   }
 
   // 计算进度百分比
