@@ -50,10 +50,14 @@ def create_app(config_name=None):
     db.init_app(app)
     migrate.init_app(app, db)
     
-    # 配置CORS
-    CORS(app, origins=["http://localhost:3000", "http://127.0.0.1:3000",
-                       "http://localhost:5173", "http://127.0.0.1:5173",
-                       "http://localhost:5174", "http://127.0.0.1:5174"])
+    # 配置CORS - 支持所有来源和预检请求
+    CORS(app,
+         resources={r"/*": {
+             "origins": "*",
+             "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+             "allow_headers": ["Content-Type", "Authorization", "X-Requested-With"],
+             "supports_credentials": False
+         }})
     
     # 配置日志
     configure_logging(app)
