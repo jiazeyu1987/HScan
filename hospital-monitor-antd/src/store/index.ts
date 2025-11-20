@@ -586,13 +586,19 @@ export const useCrawlerStore = create<CrawlerState>()(
         } catch (error) {
           // 使用模拟爬虫状态作为fallback
           const mockStatus = {
-            is_running: false,
-            current_task: null,
+            status: 'stopped' as const,
+            progress: 0,
+            current_task: undefined,
             total_tasks: 156,
             completed_tasks: 142,
-            failed_tasks: 14,
-            last_run_time: '2024-11-18T08:30:00Z',
-            next_run_time: '2024-11-19T08:30:00Z'
+            running_tasks: 0,
+            error_tasks: 14,
+            summary: {
+              total_tasks: 156,
+              running_count: 0,
+              completed_count: 142,
+              error_count: 14
+            }
           }
           set({ status: mockStatus })
         }

@@ -251,10 +251,10 @@ const CrawlerDashboard: React.FC = () => {
               </Title>
               <Text type="secondary">{statusConfig.description}</Text>
               
-              {status && status.status === 'running' && status.start_time && (
+              {status && status.status === 'running' && status.current_task?.start_time && (
                 <div className="mt-4 p-3 bg-blue-50 rounded">
                   <Text type="secondary">
-                    开始时间: {formatTime(status.start_time)}
+                    开始时间: {formatTime(status.current_task.start_time)}
                   </Text>
                 </div>
               )}
@@ -284,8 +284,11 @@ const CrawlerDashboard: React.FC = () => {
                 <div className="mt-4 p-3 bg-gray-50 rounded">
                   <Text strong>当前任务:</Text>
                   <Paragraph className="mb-0 mt-1" ellipsis>
-                    {status.current_task}
+                    {status.current_task.message} (任务ID: {status.current_task.task_id})
                   </Paragraph>
+                  <div className="mt-2 text-sm text-gray-500">
+                    类型: {status.current_task.task_type} | 进度: {status.current_task.progress.toFixed(1)}%
+                  </div>
                 </div>
               )}
             </div>
@@ -365,7 +368,7 @@ const CrawlerDashboard: React.FC = () => {
           <Card>
             <Statistic
               title="运行时间"
-              value={status?.start_time ? Math.round((Date.now() - new Date(status.start_time).getTime()) / 1000 / 60) : 0}
+              value={status?.current_task?.start_time ? Math.round((Date.now() - new Date(status.current_task.start_time).getTime()) / 1000 / 60) : 0}
               suffix="分钟"
               prefix={<ClockCircleOutlined />}
               valueStyle={{ color: '#1890ff' }}

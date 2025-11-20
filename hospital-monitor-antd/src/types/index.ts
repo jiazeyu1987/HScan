@@ -88,14 +88,31 @@ export interface Region {
 }
 
 // 爬虫相关类型
+export interface CrawlerTask {
+  task_id: string
+  task_type: string
+  progress: number
+  message: string
+  start_time?: string
+}
+
 export interface CrawlerStatus {
   status: 'running' | 'stopped' | 'error'
   progress: number
-  current_task?: string
+  current_task?: CrawlerTask
   total_tasks: number
   completed_tasks: number
+  running_tasks: number
+  error_tasks: number
   start_time?: string
   end_time?: string
+  all_tasks?: Record<string, any>
+  summary?: {
+    total_tasks: number
+    running_count: number
+    completed_count: number
+    error_count: number
+  }
 }
 
 export interface CrawlerLog {
