@@ -105,16 +105,16 @@ class CrawlerTask:
     def _run_hospital_discovery(self):
         """执行医院发现任务"""
         # 模拟医院发现过程
-        total_steps = 10
+        total_steps = 20
         for i in range(total_steps):
             if self.status != CrawlerStatus.RUNNING:
                 break
-            
-            time.sleep(0.5)  # 模拟工作
-            
+
+            time.sleep(3)  # 模拟工作，每步3秒，总共1分钟
+
             self.progress = (i + 1) / total_steps * 100
             self.message = f"正在搜索医院信息... ({i + 1}/{total_steps})"
-            
+
             # 模拟找到医院
             if i == total_steps - 1:
                 self.result['hospitals_found'] = 150
@@ -124,16 +124,16 @@ class CrawlerTask:
     def _run_tender_monitor(self):
         """执行招投标监控任务"""
         # 模拟招投标监控过程
-        total_steps = 8
+        total_steps = 15
         for i in range(total_steps):
             if self.status != CrawlerStatus.RUNNING:
                 break
-            
-            time.sleep(0.3)  # 模拟工作
-            
+
+            time.sleep(2)  # 模拟工作，每步2秒，总共30秒
+
             self.progress = (i + 1) / total_steps * 100
             self.message = f"正在监控招投标信息... ({i + 1}/{total_steps})"
-            
+
             # 模拟找到招投标
             if i == total_steps - 1:
                 self.result['tenders_found'] = 45
@@ -143,21 +143,49 @@ class CrawlerTask:
     def _run_hospital_scan(self):
         """执行医院扫描任务"""
         # 模拟医院网站扫描
-        total_steps = 15
+        total_steps = 30
+
+        # 根据配置调整执行速度 (默认2秒/步，总共1分钟)
+        step_delay = self.config.get('step_delay', 2)
+        if self.config.get('fast_mode', False):
+            step_delay = 0.5  # 快速模式：15秒完成
+        elif self.config.get('demo_mode', False):
+            step_delay = 3    # 演示模式：1.5分钟完成
+
         for i in range(total_steps):
             if self.status != CrawlerStatus.RUNNING:
                 break
-            
-            time.sleep(0.2)  # 模拟工作
-            
+
+            time.sleep(step_delay)  # 根据模式调整延迟
+
             self.progress = (i + 1) / total_steps * 100
             self.message = f"正在扫描医院网站... ({i + 1}/{total_steps})"
-            
-            # 模拟扫描结果
+
+            # 模拟扫描结果，在不同阶段发现不同的内容
+            if i == 5:
+                self.message = f"发现医院官网首页，正在解析导航结构... ({i + 1}/{total_steps})"
+            elif i == 10:
+                self.message = f"正在查找招投标信息入口... ({i + 1}/{total_steps})"
+            elif i == 15:
+                self.message = f"发现招投标栏目，正在解析信息... ({i + 1}/{total_steps})"
+                self.result['tenders_found'] = 1
+            elif i == 20:
+                self.message = f"正在深入分析招投标详情... ({i + 1}/{total_steps})"
+                self.result['tenders_found'] = 3
+            elif i == 25:
+                self.message = f"正在验证和整理数据... ({i + 1}/{total_steps})"
+                self.result['tenders_found'] = 5
+
+            # 最终结果
             if i == total_steps - 1:
-                self.result['websites_scanned'] = 15
-                self.result['successful_scans'] = 12
-                self.result['tender_columns_found'] = 8
+                self.result.update({
+                    'websites_scanned': total_steps,
+                    'successful_scans': total_steps - 2,
+                    'tender_columns_found': 8,
+                    'tenders_found': 5,
+                    'data_processed': 'hospital_info',
+                    'scan_quality': 'high'
+                })
 
 class CrawlerManager:
     """爬虫任务管理器"""
